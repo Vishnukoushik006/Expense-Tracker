@@ -1,36 +1,44 @@
 const express = require("express");
 const router = express.Router();
 const Expense = require("../models/Expense");
+const authMiddleware = require("../middleware/authMiddleware");
 
-// ADD expense
-router.post("/add", async (req, res) => {
-    console.log("=> Request received");   // ADD THIS
-  console.log(req.body); 
+// 🔐 ADD expense (protected)
+router.post("/add", authMiddleware, async (req, res) => {
   try {
-    const expense = new Expense(req.body);
-    const saved = await expense.save();
+    const newExpense = new Expense({
+      ...req.body,
+      userId: req.userId
+    });
+
+    const saved = await newExpense.save();
     res.json(saved);
   } catch (error) {
-    console.log("❌ Error:", error);  
+    console.log("❌ Error:", error);
     res.status(500).json({ error: error.message });
   }
 });
 
 
-// GET all expenses
-router.get("/", async (req, res) => {
+// 🔐 GET all expenses (user-specific)
+router.get("/", authMiddleware, async (req, res) => {
   try {
-    const expenses = await Expense.find();
+    const expenses = await Expense.find({ userId: req.userId });
     res.json(expenses);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// DELETE expense
-router.delete("/:id", async (req, res) => {
+
+// 🔐 DELETE expense (only own data)
+router.delete("/:id", authMiddleware, async (req, res) => {
   try {
-    const deleted = await Expense.findByIdAndDelete(req.params.id);
+    const deleted = await Expense.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.userId
+    });
+
     res.json({ message: "Expense deleted", deleted });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -38,11 +46,11 @@ router.delete("/:id", async (req, res) => {
 });
 
 
-// UPDATE expense
-router.put("/:id", async (req, res) => {
+// 🔐 UPDATE expense (only own data)
+router.put("/:id", authMiddleware, async (req, res) => {
   try {
-    const updated = await Expense.findByIdAndUpdate(
-      req.params.id,
+    const updated = await Expense.findOneAndUpdate(
+      { _id: req.params.id, userId: req.userId },
       req.body,
       { new: true }
     );

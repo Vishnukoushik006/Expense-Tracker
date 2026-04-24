@@ -90,6 +90,11 @@ function App() {
     if (savedDarkMode) {
       setDarkMode(JSON.parse(savedDarkMode));
     }
+    axios.get("/api/expenses", {
+  headers: {
+    Authorization: localStorage.getItem("token")
+  }
+});
 
     // Fetch from API
     axios

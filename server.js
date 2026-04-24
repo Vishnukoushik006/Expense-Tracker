@@ -3,6 +3,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const expenseRoutes = require("./routes/expenseRoutes");
 require("dotenv").config();
+
 const app = express();
 
 connectDB();
@@ -25,6 +26,8 @@ app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-app.listen(8005, () => {
-  console.log("Server running on port 8005");
+const PORT = process.env.PORT || 8005;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

@@ -5,9 +5,9 @@ const expenseRoutes = require("./routes/expenseRoutes");
 require("dotenv").config();
 const authRoutes = require("./routes/authRoutes");
 
-app.use("/api/auth", authRoutes);
 const app = express();
 
+// Connect to MongoDB
 connectDB();
 
 // middleware
@@ -21,6 +21,7 @@ app.use((req, res, next) => {
 });
 
 // routes
+app.use("/api/auth", authRoutes);
 app.use("/api/expenses", expenseRoutes);
 
 // test route

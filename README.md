@@ -5,7 +5,7 @@ A smart and intuitive expense tracking web application to manage finances, track
 
 🚀 Live Demo
 
-[(Add your deployed link here if available)](https://expense-tracker-x4xi.vercel.app/)
+https://expense-tracker-x4xi.vercel.app/
 
 📌 Problem Statement
 
